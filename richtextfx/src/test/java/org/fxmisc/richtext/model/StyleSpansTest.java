@@ -40,6 +40,8 @@ public class StyleSpansTest {
             checkStyle(styleSpans.subView(7, 7), 0, new String[] {"beta"}, 0, 0); // Strange, why isn't it empty?
             // Inverted indexes
             checkStyle(styleSpans.subView(14, 5), 0, new String[] {"charlie"}, 0, 0);
+            // Out of bound
+            checkStyle(styleSpans.subView(-1,22), 23, new String[] {"alpha", "beta", "charlie"}, 0, 6, 6, 13, 0, 10);
             // Bug
             checkStyle(styleSpans.subView(6, 14), 8, new String[] {"beta", "charlie"}, 0, 7, 0, 1);
             checkStyle(styleSpans.subView(5, 13), 8, new String[] {"alpha", "beta"}, 0, 1, 0, 7);
