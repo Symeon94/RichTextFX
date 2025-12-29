@@ -195,43 +195,55 @@ public final class Paragraph<PS, SEG, S> {
         if(p.length() == 0) {
             return this;
         }
-
         if(length() == 0) {
             return p;
         }
+        List<SEG> concatSegments = concatSegmentsOf(p);
+        StyleSpans<S> concatStyles = concatStylesOf(p);
+        return new Paragraph<>(paragraphStyle, segmentOps, concatSegments, concatStyles);
+    }
 
-        List<SEG> updatedSegs;
-        SEG leftSeg = segments.get(segments.size() - 1);
-        SEG rightSeg = p.segments.get(0);
-        Optional<SEG> joined = segmentOps.joinSeg(leftSeg, rightSeg);
-        if(joined.isPresent()) {
-            SEG segment = joined.get();
-            updatedSegs = new ArrayList<>(segments.size() + p.segments.size() - 1);
-            updatedSegs.addAll(segments.subList(0, segments.size()-1));
-            updatedSegs.add(segment);
-            updatedSegs.addAll(p.segments.subList(1, p.segments.size()));
-        } else {
-            updatedSegs = new ArrayList<>(segments.size() + p.segments.size());
-            updatedSegs.addAll(segments);
-            updatedSegs.addAll(p.segments);
-        }
-
-        StyleSpans<S> updatedStyles;
+    private StyleSpans<S> concatStylesOf(Paragraph<PS, SEG, S> p) {
         StyleSpan<S> leftSpan = styles.getStyleSpan(styles.getSpanCount() - 1);
         StyleSpan<S> rightSpan = p.styles.getStyleSpan(0);
-        Optional<S> merge = segmentOps.joinStyle(leftSpan.getStyle(), rightSpan.getStyle());
-        if (merge.isPresent()) {
-            int startOfMerge = styles.position(styles.getSpanCount() - 1, 0).toOffset();
-            StyleSpans<S> updatedLeftSpan = styles.subView(0, startOfMerge);
-            int endOfMerge = p.styles.position(1, 0).toOffset();
-            StyleSpans<S> updatedRightSpan = p.styles.subView(endOfMerge, p.styles.length());
-            updatedStyles = updatedLeftSpan
-                    .append(merge.get(), leftSpan.getLength() + rightSpan.getLength())
+        Optional<S> mergedStyle = segmentOps.joinStyle(leftSpan.getStyle(), rightSpan.getStyle());
+        if (mergedStyle.isPresent()) {
+            StyleSpans<S> updatedLeftSpan = getSubStyle(0, styles.getSpanCount() - 1);
+            StyleSpans<S> updatedRightSpan = getSubStyle(1, styles.getSpanCount());
+            return updatedLeftSpan
+                    .append(mergedStyle.get(), leftSpan.getLength() + rightSpan.getLength())
                     .concat(updatedRightSpan);
-        } else {
-            updatedStyles = styles.concat(p.styles);
         }
-        return new Paragraph<>(paragraphStyle, segmentOps, updatedSegs, updatedStyles);
+        return styles.concat(p.styles);
+    }
+
+    private StyleSpans<S> getSubStyle(int from, int to) {
+        int start = styles.position(from, 0).toOffset();
+        int end = styles.position(to, 0).toOffset();
+        return styles.subView(start, end);
+    }
+
+    private List<SEG> concatSegmentsOf(Paragraph<PS, SEG, S> par) {
+        List<SEG> updatedSegments;
+        Optional<SEG> joined = concatLastSegmentWith(par);
+        if(joined.isPresent()) {
+            SEG segment = joined.get();
+            updatedSegments = new ArrayList<>(segments.size() + par.segments.size() - 1); // -2 + 1
+            updatedSegments.addAll(segments.subList(0, segments.size()-1));
+            updatedSegments.add(segment);
+            updatedSegments.addAll(par.segments.subList(1, par.segments.size()));
+        } else {
+            updatedSegments = new ArrayList<>(segments.size() + par.segments.size());
+            updatedSegments.addAll(segments);
+            updatedSegments.addAll(par.segments);
+        }
+        return updatedSegments;
+    }
+
+    private Optional<SEG> concatLastSegmentWith(Paragraph<PS, SEG, S> par) {
+        SEG leftLastSegment = segments.get(segments.size() - 1);
+        SEG rightFirstSegment = par.segments.get(0);
+        return segmentOps.joinSeg(leftLastSegment, rightFirstSegment);
     }
 
     /**
