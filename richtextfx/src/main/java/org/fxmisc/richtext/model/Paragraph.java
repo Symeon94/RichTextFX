@@ -320,14 +320,13 @@ public final class Paragraph<PS, SEG, S> {
     }
 
     public Paragraph<PS, SEG, S> restyle(int from, int to, S style) {
-        if(from >= length()) {
-            return this;
-        } else {
+        if(from < length()) {
             StyleSpans<S> left = styles.subView(0, from);
             StyleSpans<S> right = styles.subView(to, length());
             StyleSpans<S> updatedStyles = left.append(style, to - from).concat(right);
             return new Paragraph<>(paragraphStyle, segmentOps, segments, updatedStyles);
         }
+        return this;
     }
 
     public Paragraph<PS, SEG, S> restyle(int from, StyleSpans<? extends S> styleSpans) {
