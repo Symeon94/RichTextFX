@@ -260,20 +260,13 @@ public final class Paragraph<PS, SEG, S> {
         return trim(end).subSequence(start);
     }
 
-    public Paragraph<PS, SEG, S> trim(int length) {
-        length = Math.max(0, length);
-        if(length < length()) {
-            return trimTo(navigator.offsetToPosition(length, Backward));
+    public Paragraph<PS, SEG, S> trim(int end) {
+        end = Math.max(0, end);
+        if(end < length()) {
+            List<SEG> segments = trimSegmentsTo(navigator.offsetToPosition(end, Backward));
+            return new Paragraph<>(paragraphStyle, segmentOps, segments, styles.subView(0, end));
         }
         return this;
-    }
-
-    private Paragraph<PS, SEG, S> trimTo(Position position) {
-        int index = position.getMajor();
-        List<SEG> segments = new ArrayList<>(index + 1);
-        segments.addAll(this.segments.subList(0, index));
-        segments.add(segmentOps.subSequence(this.segments.get(index), 0, position.getMinor()));
-        return new Paragraph<>(paragraphStyle, segmentOps, segments, styles.subView(0, length));
     }
 
     public Paragraph<PS, SEG, S> subSequence(int start) {
@@ -286,18 +279,27 @@ public final class Paragraph<PS, SEG, S> {
             // to use the left ops' default empty seg, not the right one's empty seg
             return new Paragraph<>(paragraphStyle, segmentOps, segmentOps.createEmptySeg(), styles.subView(start,start));
         } else if(start < length()) {
-            Position pos = navigator.offsetToPosition(start, Forward);
-            int segIdx = pos.getMajor();
-            List<SEG> segs = new ArrayList<>(segments.size() - segIdx);
-            segs.add(segmentOps.subSequence(segments.get(segIdx), pos.getMinor()));
-            segs.addAll(segments.subList(segIdx + 1, segments.size()));
-            if (segs.isEmpty()) {
-                segs.add(segmentOps.createEmptySeg());
-            }
-            return new Paragraph<>(paragraphStyle, segmentOps, segs, styles.subView(start, styles.length()));
-        } else {
-            throw new IndexOutOfBoundsException(start + " not in [0, " + length() + "]");
+            Position position = navigator.offsetToPosition(start, Forward);
+            List<SEG> segments = trimSegmentsFrom(position);
+            return new Paragraph<>(paragraphStyle, segmentOps, segments, styles.subView(start, styles.length()));
         }
+        throw new IndexOutOfBoundsException(start + " not in [0, " + length() + "]");
+    }
+
+    private List<SEG> trimSegmentsTo(Position position) {
+        int index = position.getMajor();
+        List<SEG> segments = new ArrayList<>(index + 1);
+        segments.addAll(this.segments.subList(0, index));
+        segments.add(segmentOps.subSequence(this.segments.get(index), 0, position.getMinor()));
+        return segments;
+    }
+
+    private List<SEG> trimSegmentsFrom(Position position) {
+        int index = position.getMajor();
+        List<SEG> segments = new ArrayList<>(this.segments.size() - index);
+        segments.add(segmentOps.subSequence(this.segments.get(index), position.getMinor()));
+        segments.addAll(this.segments.subList(index + 1, this.segments.size()));
+        return segments;
     }
 
     public Paragraph<PS, SEG, S> delete(int start, int end) {
