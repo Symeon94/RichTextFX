@@ -1,11 +1,13 @@
 package org.fxmisc.richtext.model;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StyleSpanTest {
     private void checkSpan(StyleSpan<String> span, String style, int pos, int len) {
@@ -63,5 +65,24 @@ public class StyleSpanTest {
         // have been to use a static create method, a factory, or to change length to 0
         assertThrows(IllegalArgumentException.class, () -> new StyleSpan<>("test", -1));
         assertThrows(IllegalArgumentException.class, () -> new StyleSpan<>("test", 0, -1));
+    }
+
+    @Nested
+    @DisplayName("Append")
+    class AppendTest {
+        @DisplayName("Append two spans of the same style returns a new style span")
+        void appendTwoSpans(){
+            StyleSpan<String> styleSpan = new StyleSpan<>("value", 2, 3).append(new StyleSpan<>("value", 2, 4)).orElseThrow();
+            checkSpan(styleSpan, "value", 2, 7);
+        }
+
+        @Test
+        @DisplayName("Append two spans of different types do not return anything")
+        void appendDifferentStyle() {
+            StyleSpan<String> a = new StyleSpan<>("value", 2, 3);
+            StyleSpan<String> b = new StyleSpan<>("test", 2, 3);
+            assertTrue(a.append(b).isEmpty());
+            assertTrue(b.append(a).isEmpty());
+        }
     }
 }

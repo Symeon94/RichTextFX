@@ -172,11 +172,10 @@ public class StyleSpansBuilder<S> {
             }
             else {
                 StyleSpan<S> prev = spans.get(spans.size() - 1);
-                if(prev.getStyle().equals(span.getStyle())) {
-                    spans.set(spans.size() - 1, new StyleSpan<>(span.getStyle(), prev.getStart(), prev.getLength() + span.getLength()));
-                } else {
-                    spans.add(span.moveTo(prev.getStart() + prev.getLength()));
-                }
+                prev.append(span).ifPresentOrElse(
+                        newSpan -> spans.set(spans.size() - 1, newSpan),
+                        () -> spans.add(span.moveTo(prev.getStart() + prev.getLength()))
+                );
             }
         }
     }

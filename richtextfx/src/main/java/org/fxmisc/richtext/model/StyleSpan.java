@@ -1,6 +1,7 @@
 package org.fxmisc.richtext.model;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Essentially, a {@link org.reactfx.util.Tuple2} of a given style {@link S} that spans a given length.
@@ -10,7 +11,7 @@ import java.util.Objects;
 public class StyleSpan<S> {
     private final S style;
     private final int length;
-    private int startPos;
+    private final int start;
 
     /**
      * Creates a style span. Note: length cannot be negative.
@@ -24,8 +25,20 @@ public class StyleSpan<S> {
             throw new IllegalArgumentException("StyleSpan's length cannot be negative");
         }
         this.style = style;
-        this.startPos = start;
+        this.start = start;
         this.length = length;
+    }
+
+    /**
+     * If the provided argument is of the same size append the content
+     * @param next the item to be appended
+     * @return an empty optional if styles differs, else a new {@link StyleSpan} with the two concatenated length
+     */
+    public Optional<StyleSpan<S>> append(StyleSpan<S> next) {
+        if(Objects.equals(this.style, next.style)) {
+            return Optional.of(new StyleSpan<>(this.style, this.start, this.length + next.length));
+        }
+        return Optional.empty();
     }
 
     public S getStyle() {
@@ -41,7 +54,7 @@ public class StyleSpan<S> {
     }
 
     int getStart() {
-        return startPos;
+        return start;
     }
 
     /**
