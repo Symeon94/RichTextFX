@@ -170,7 +170,7 @@ public class ParagraphTest {
     public void trimParagraph() {
         Paragraph<Void, String, String> p1 = createTextParagraph(SegmentOps.styledTextOps(), "Alpha", "MyStyle");
         // Not very consistent that MIN_VALUE is throwing an exception while other negative numbers work
-        assertThrows(StringIndexOutOfBoundsException.class, () -> p1.trim(Integer.MIN_VALUE).getText());
+        assertEquals("", p1.trim(Integer.MIN_VALUE).getText());
         assertEquals("", p1.trim(-10).getText());
         assertEquals("", p1.trim(-1).getText());
         assertEquals("Alpha", p1.trim(Integer.MAX_VALUE).getText());
@@ -198,7 +198,7 @@ public class ParagraphTest {
         assertThrows(IndexOutOfBoundsException.class, () -> paragraph.delete(4, 10).getText()); // Not consistent with -1
         assertEquals("gated", paragraph.delete(0, 4).getText());
         assertEquals("gated", paragraph.delete(-1, 4).getText());
-        assertThrows(StringIndexOutOfBoundsException.class, () -> paragraph.delete(Integer.MIN_VALUE, 4).getText()); // Not very consistent with -1
+        assertEquals("gated", paragraph.delete(Integer.MIN_VALUE, 4).getText());
 
         // Check style too
         Paragraph<Void, String, String> p2 = paragraph.delete(2, 5);

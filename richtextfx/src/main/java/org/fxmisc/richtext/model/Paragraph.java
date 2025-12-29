@@ -261,19 +261,19 @@ public final class Paragraph<PS, SEG, S> {
     }
 
     public Paragraph<PS, SEG, S> trim(int length) {
-        if(length >= length()) {
-            return this;
-        } else {
-            Position pos = navigator.offsetToPosition(length, Backward);
-            int segIdx = pos.getMajor();
-            List<SEG> segs = new ArrayList<>(segIdx + 1);
-            segs.addAll(segments.subList(0, segIdx));
-            segs.add(segmentOps.subSequence(segments.get(segIdx), 0, pos.getMinor()));
-            if (segs.isEmpty()) {
-                segs.add(segmentOps.createEmptySeg());
-            }
-            return new Paragraph<>(paragraphStyle, segmentOps, segs, styles.subView(0, length));
+        length = Math.max(0, length);
+        if(length < length()) {
+            return trimTo(navigator.offsetToPosition(length, Backward));
         }
+        return this;
+    }
+
+    private Paragraph<PS, SEG, S> trimTo(Position position) {
+        int index = position.getMajor();
+        List<SEG> segments = new ArrayList<>(index + 1);
+        segments.addAll(this.segments.subList(0, index));
+        segments.add(segmentOps.subSequence(this.segments.get(index), 0, position.getMinor()));
+        return new Paragraph<>(paragraphStyle, segmentOps, segments, styles.subView(0, length));
     }
 
     public Paragraph<PS, SEG, S> subSequence(int start) {
