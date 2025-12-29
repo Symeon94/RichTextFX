@@ -21,9 +21,9 @@ public class ParagraphTest {
         assertEquals(ranges.length/2, styleSpans.getSpanCount(), "Style segment count invalid");
         for (int i = 0; i < ranges.length/2 ; i++) {
             StyleSpan<T> style = styleSpans.getStyleSpan(i);
+            assertEquals(styles[i], style.getStyle(), "Incorrect style for " + i);
             assertEquals(ranges[i*2], style.getStart(), "Start not matching for " + i);
             assertEquals(ranges[i*2 + 1] - ranges[i*2], style.getLength(), "Length not matching for " + i);
-            assertEquals(styles[i], style.getStyle(), "Incorrect style for " + i);
         }
     }
 
@@ -257,8 +257,13 @@ public class ParagraphTest {
         Paragraph<Void, String, String> p3 = p2.restyle(3, 10, "unknown");
         checkStyle(p3, 18, new String[] {"text", "unknown", "keyword", "text"}, 0, 3, 3, 10, 10, 12, 12, 18);
 
+        // Restyle in bound
+        // Bug
+        checkStyle(p3.restyle(11, 18, "out"), 18,
+                new String[] {"text", "unknown", "keyword", "out"},
+                0, 3, 3, 10, 0, 1, 0, 7);
+
         // Restyle out of bound
-        // Bug: the styles are totally off
         checkStyle(p3.restyle(11, 19, "out"), 19,
                 new String[] {"text", "unknown", "keyword", "out"},
                 0, 3, 3, 10, 0, 1, 0, 8);
