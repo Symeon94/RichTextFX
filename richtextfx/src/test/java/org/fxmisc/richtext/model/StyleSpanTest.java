@@ -62,7 +62,6 @@ public class StyleSpanTest {
         // This is bad practice to throw exception in constructor, but that's the way it is. Other solutions would
         // have been to use a static create method, a factory, or to change length to 0
         assertThrows(IllegalArgumentException.class, () -> new StyleSpan<>("test", -1));
-        // This is not consistent, as it doesn't throw
-        checkSpan(new StyleSpan<>("test", 0, -1), "test", 0, -1);
+        assertThrows(IllegalArgumentException.class, () -> new StyleSpan<>("test", 0, -1));
     }
 }

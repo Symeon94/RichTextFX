@@ -10,20 +10,19 @@ import java.util.Objects;
 public class StyleSpan<S> {
     private final S style;
     private final int length;
-    private int startPos = 0;
+    private int startPos;
 
     /**
      * Creates a style span. Note: length cannot be negative.
      */
     public StyleSpan(S style, int length) {
-        if(length < 0) {
-            throw new IllegalArgumentException("StyleSpan's length cannot be negative");
-        }
-        this.style = style;
-        this.length = length;
+        this(style, 0, length);
     }
 
     StyleSpan(S style, int start, int length) {
+        if(length < 0) {
+            throw new IllegalArgumentException("StyleSpan's length cannot be negative");
+        }
         this.style = style;
         this.startPos = start;
         this.length = length;
