@@ -22,4 +22,12 @@ class StyleSpansChecker<T> {
             assertEquals(styles[i], style.getStyle(), "Incorrect style for " + i);
         }
     }
+
+    public static <T> void checkStyle(Paragraph<?, ?, T> paragraph, int length, T[] styles, int... ranges) {
+        checkStyle(paragraph.getStyleSpans(), length, styles, ranges);
+    }
+
+    public static <T> void checkStyle(StyleSpans<T> styleSpans, int length, T[] styles, int... ranges) {
+        new StyleSpansChecker<T>(styleSpans).check(length, styles, ranges);
+    }
 }

@@ -5,11 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class StyleSpansTest {
-    private void checkStyle(StyleSpans<String> s, int length, String[] styles, int... ranges) {
-        new StyleSpansChecker<>(s).check(length, styles, ranges);
-    }
+import static org.fxmisc.richtext.model.StyleSpansChecker.checkStyle;
 
+public class StyleSpansTest {
     private StyleSpans<String> create(String style, int len) {
         StyleSpansBuilder<String> builder = new StyleSpansBuilder<>();
         builder.add(style, len);
@@ -79,7 +77,7 @@ public class StyleSpansTest {
         @DisplayName("Append a different style to an existing style span should add it at the end")
         void appendDifferentStyle() {
             checkStyle(base.append("else", 2), 12,
-                    new String[]{"text", "else"}, 0, 10, 10, 12);
+                    new String[]{"text", "else"}, 0, 10, 0, 2);
         }
 
         @Test

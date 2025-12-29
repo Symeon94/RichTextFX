@@ -1,5 +1,6 @@
 package org.fxmisc.richtext.model;
 
+import static org.fxmisc.richtext.model.StyleSpansChecker.checkStyle;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collection;
@@ -11,10 +12,6 @@ import javafx.scene.control.IndexRange;
 import org.junit.jupiter.api.Test;
 
 public class ParagraphTest {
-    private <T> void checkStyle(Paragraph<?, ?, T> paragraph, int length, T[] styles, int... ranges) {
-        new StyleSpansChecker<T>(paragraph.getStyleSpans()).check(length, styles, ranges);
-    }
-
     private Paragraph<Void, String, Void> createTextParagraph(TextOps<String, Void> segOps, String text) {
         return new Paragraph<>(null, segOps, segOps.create(text), (Void)null);
     }
@@ -238,7 +235,7 @@ public class ParagraphTest {
         // Restyle up to the end
         checkStyle(p3.restyle(11, 18, "out"), 18,
                 new String[] {"text", "unknown", "keyword", "out"},
-                0, 3, 3, 10, 0, 1, 11, 18);
+                0, 3, 3, 10, 0, 1, 0, 7);
 
         // Restyle out of bound
         checkStyle(p3.restyle(11, 19, "out"), 19,
