@@ -328,7 +328,7 @@ class AppendedSpans<S> extends StyleSpansBase<S> {
 
     public AppendedSpans(StyleSpans<S> original, StyleSpan<S> appended) {
         this.original = original;
-        this.appended = appended.moveTo(original.length());
+        this.appended = appended; // .moveTo(original.length());
     }
 
     @Override
