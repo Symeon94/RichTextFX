@@ -12,18 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class ParagraphTest {
     private <T> void checkStyle(Paragraph<?, ?, T> paragraph, int length, T[] styles, int... ranges) {
-        if(ranges.length % 2 == 1 || styles.length != ranges.length / 2) {
-            throw new IllegalArgumentException("Ranges must come in pair [start;end] and correspond to the style count");
-        }
-        StyleSpans<T> styleSpans = paragraph.getStyleSpans();
-        assertEquals(length, styleSpans.length());
-        assertEquals(ranges.length/2, styleSpans.getSpanCount(), "Style segment count invalid");
-        for (int i = 0; i < ranges.length/2 ; i++) {
-            StyleSpan<T> style = styleSpans.getStyleSpan(i);
-            assertEquals(ranges[i*2], style.getStart(), "Start not matching for " + i);
-            assertEquals(ranges[i*2 + 1] - ranges[i*2], style.getLength(), "Length not matching for " + i);
-            assertEquals(styles[i], style.getStyle(), "Incorrect style for " + i);
-        }
+        new StyleSpansChecker<T>(paragraph.getStyleSpans()).check(length, styles, ranges);
     }
 
     private Paragraph<Void, String, Void> createTextParagraph(TextOps<String, Void> segOps, String text) {
@@ -241,8 +230,17 @@ public class ParagraphTest {
         Paragraph<Void, String, String> p3 = p2.restyle(3, 10, "unknown");
         checkStyle(p3, 18, new String[] {"text", "unknown", "keyword", "text"}, 0, 3, 3, 10, 10, 12, 12, 18);
 
+        // Restyle up to the end
+        checkStyle(p3.restyle(11, 17, "out"), 18,
+                new String[] {"text", "unknown", "keyword", "out", "text"},
+                0, 3, 3, 10, 10, 11, 11, 17, 17, 18);
+
+        // Restyle up to the end
+        checkStyle(p3.restyle(11, 18, "out"), 18,
+                new String[] {"text", "unknown", "keyword", "out"},
+                0, 3, 3, 10, 0, 1, 0, 7);
+
         // Restyle out of bound
-        // Bug: the styles are totally off
         checkStyle(p3.restyle(11, 19, "out"), 19,
                 new String[] {"text", "unknown", "keyword", "out"},
                 0, 3, 3, 10, 0, 1, 0, 8);
