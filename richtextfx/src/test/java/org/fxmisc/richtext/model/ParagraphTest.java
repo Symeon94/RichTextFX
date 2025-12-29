@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javafx.scene.control.IndexRange;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class ParagraphTest {
@@ -155,6 +156,17 @@ public class ParagraphTest {
     }
 
     @Test
+    @DisplayName("Trim on empty text should return empty")
+    public void trimOnEmpty() {
+        Paragraph<Void, String, Void> p1 = createTextParagraph(SegmentOps.styledTextOps(), "");
+        assertEquals("", p1.trim(-1).getText());
+        assertEquals("", p1.trim(0).getText());
+        assertEquals("", p1.trim(1).getText());
+        assertEquals("", p1.trim(Integer.MAX_VALUE).getText());
+    }
+
+    @Test
+    @DisplayName("Trim text should return the text until the provided position")
     public void trimParagraph() {
         Paragraph<Void, String, String> p1 = createTextParagraph(SegmentOps.styledTextOps(), "Alpha", "MyStyle");
         // Not very consistent that MIN_VALUE is throwing an exception while other negative numbers work
