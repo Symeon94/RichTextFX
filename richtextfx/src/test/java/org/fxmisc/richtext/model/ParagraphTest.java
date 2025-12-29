@@ -280,10 +280,9 @@ public class ParagraphTest {
         // Bug
         checkStyle(p3.restyle(0, new StyleSpansBuilder<String>().add("na", 0).create()), 18,
                 new String[] {"text", "unknown", "keyword", "text"},
-                0, 3, 4, 11, 11, 13, 0, 6);
+                0, 3, 3, 10, 10, 12, 0, 6);
 
         // Restyle with empty style span
-        // Bug
         StyleSpans<String> emptyStyle = new StyleSpans<>() {
             @Override public Position position(int major, int minor) {return null;}
             @Override public Position offsetToPosition(int offset, Bias bias) {return null;}
@@ -294,6 +293,6 @@ public class ParagraphTest {
         };
         checkStyle(p3.restyle(0, emptyStyle), 18,
                 new String[] {"text", "unknown", "keyword", "text"},
-                0, 3, 4, 11, 11, 13, 12, 18);
+                0, 3, 3, 10, 10, 12, 12, 18);
     }
 }

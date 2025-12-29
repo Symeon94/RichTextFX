@@ -36,13 +36,7 @@ public class StyleSpan<S> {
         return length;
     }
 
-    // TODO This one is only used in the factory, can't se make the start position immutable and use "moveTo"
-    //      instead (essentially turning this into an immutable style)
-    void setStart( int start ) {
-        startPos = start;
-    }
-
-    StyleSpan<S> moveTo(int start) {
+    public StyleSpan<S> moveTo(int start) {
         return new StyleSpan<>(style, start, length);
     }
 

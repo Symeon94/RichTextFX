@@ -175,8 +175,7 @@ public class StyleSpansBuilder<S> {
                 if(prev.getStyle().equals(span.getStyle())) {
                     spans.set(spans.size() - 1, new StyleSpan<>(span.getStyle(), prev.getStart(), prev.getLength() + span.getLength()));
                 } else {
-                    span.setStart(prev.getStart() + prev.getLength());
-                    spans.add(span);
+                    spans.add(span.moveTo(prev.getStart() + prev.getLength()));
                 }
             }
         }
