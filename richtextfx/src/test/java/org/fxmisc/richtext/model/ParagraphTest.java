@@ -244,6 +244,10 @@ public class ParagraphTest {
         Paragraph<Void, String, String> p1 = createTextParagraph("To be or not to be", "text");
         checkStyle(p1, 18, new String[] {"text"}, 0, 18);
 
+        // Restyle with same style
+        Paragraph<Void, String, String> p1b = p1.restyle(0, 18, "text");
+        checkStyle(p1b, 18, new String[] {"text"}, 0, 18);
+
         // P1 is immutable, its style hasn't changed, but P2 has now three styles
         Paragraph<Void, String, String> p2 = p1.restyle(9, 12, "keyword");
         checkStyle(p1, 18, new String[] {"text"}, 0, 18);

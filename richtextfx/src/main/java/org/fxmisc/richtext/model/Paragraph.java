@@ -338,14 +338,15 @@ public final class Paragraph<PS, SEG, S> {
         if(length() == 0) {
         	return new Paragraph<>(paragraphStyle, segmentOps, segments, (StyleSpans<S>) styleSpans);
         }
+        StyleSpans<S> updatedStyles = restyleExistingFrom(from, styleSpans);
+        return new Paragraph<>(paragraphStyle, segmentOps, segments, updatedStyles);
+    }
 
+    private StyleSpans<S> restyleExistingFrom(int from, StyleSpans<? extends S> styleSpans) {
+        int len = styleSpans.length();
         StyleSpans<S> left = styles.subView(0, from);
         StyleSpans<S> right = styles.subView(from + len, length());
-
-        // type issue with concat
-        StyleSpans<S> castedSpans = (StyleSpans<S>) styleSpans;
-        StyleSpans<S> updatedStyles = left.concat(castedSpans).concat(right);
-        return new Paragraph<>(paragraphStyle, segmentOps, segments, updatedStyles);
+        return left.concat((StyleSpans<S>) styleSpans).concat(right);
     }
 
     /**
