@@ -257,7 +257,12 @@ public class ParagraphTest {
         Paragraph<Void, String, String> p3 = p2.restyle(3, 10, "unknown");
         checkStyle(p3, 18, new String[] {"text", "unknown", "keyword", "text"}, 0, 3, 3, 10, 10, 12, 12, 18);
 
-        // Restyle in bound
+        // Restyle up to the end
+        checkStyle(p3.restyle(11, 17, "out"), 18,
+                new String[] {"text", "unknown", "keyword", "out", "text"},
+                0, 3, 3, 10, 10, 11, 11, 17, 17, 18);
+
+        // Restyle up to the end
         // Bug
         checkStyle(p3.restyle(11, 18, "out"), 18,
                 new String[] {"text", "unknown", "keyword", "out"},
