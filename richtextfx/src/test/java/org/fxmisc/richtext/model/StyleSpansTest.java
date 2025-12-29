@@ -16,6 +16,32 @@ public class StyleSpansTest {
         return builder.create();
     }
 
+    @Nested
+    @DisplayName("Extract subview")
+    class SubViewTest {
+        @Test
+        @DisplayName("Extract subview from a single style span should return the same style")
+        void createSubViewFromSingleStyle() {
+            StyleSpans<String> subStyle = create("text", 10).subView(2, 8);
+            checkStyle(subStyle, 6, new String[] {"text"}, 0, 6);
+        }
+
+        @Test
+        @DisplayName("Extract subview cutting in different styles")
+        void createSubViewFromMultiple() {
+            StyleSpansBuilder<String> builder = new StyleSpansBuilder<>();
+            builder.add("alpha", 6);
+            builder.add("beta", 7);
+            builder.add("charlie", 8);
+            StyleSpans<String> styleSpans = builder.create();
+            checkStyle(styleSpans, 21, new String[] {"alpha", "beta", "charlie"}, 0, 6, 6, 13, 13, 21);
+            checkStyle(styleSpans.subView(6, 13), 7, new String[] {"beta"}, 0, 7);
+            // Bug
+            checkStyle(styleSpans.subView(6, 14), 8, new String[] {"beta", "charlie"}, 0, 7, 0, 1);
+            checkStyle(styleSpans.subView(5, 13), 8, new String[] {"alpha", "beta"}, 0, 1, 0, 7);
+            checkStyle(styleSpans.subView(5, 14), 9, new String[] {"alpha", "beta", "charlie"}, 0, 1, 6, 13, 0, 1);
+        }
+    }
 
     @Nested
     @DisplayName("Append")

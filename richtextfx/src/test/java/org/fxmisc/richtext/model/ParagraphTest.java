@@ -238,7 +238,7 @@ public class ParagraphTest {
         // Restyle up to the end
         checkStyle(p3.restyle(11, 18, "out"), 18,
                 new String[] {"text", "unknown", "keyword", "out"},
-                0, 3, 3, 10, 0, 1, 0, 7);
+                0, 3, 3, 10, 0, 1, 11, 18);
 
         // Restyle out of bound
         checkStyle(p3.restyle(11, 19, "out"), 19,
