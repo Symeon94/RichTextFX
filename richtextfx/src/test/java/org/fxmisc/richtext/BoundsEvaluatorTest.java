@@ -16,8 +16,8 @@ public class BoundsEvaluatorTest {
     }
 
     @Test
-    @DisplayName("Test")
-    void test() {
+    @DisplayName("Evaluate paragraph bounds on screen")
+    void evaluateParagraphBoundsOnScreen() {
         ScreenBounds boundsEvaluator = new ScreenBounds(new BoundingBox(20, 20, 100, 100));
         // Start < Screen ; End < Screen
         checkBounds(boundsEvaluator.getParagraphBoundsFrom(new BoundingBox(10, 10, 50, 50)),
