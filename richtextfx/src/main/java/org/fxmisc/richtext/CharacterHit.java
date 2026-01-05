@@ -32,7 +32,6 @@ public class CharacterHit {
         return new CharacterHit(OptionalInt.of(charIdx), charIdx + 1);
     }
 
-
     private final OptionalInt charIdx;
     private final int insertionIndex;
 
