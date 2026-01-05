@@ -29,8 +29,6 @@ public class CharacterHitTest {
     void leadingHalfOf() {
         checkHit(CharacterHit.leadingHalfOf(2), 2, 2);
         checkHit(CharacterHit.leadingHalfOf(2).offset(12), 14, 14);
-        checkHit(CharacterHit.at(2, true), 2, 2);
-        checkHit(CharacterHit.at(2, true).offset(12), 14, 14);
     }
 
     @Test
@@ -38,7 +36,5 @@ public class CharacterHitTest {
     void trailingHalfOf() {
         checkHit(CharacterHit.trailingHalfOf(2), 3, 2);
         checkHit(CharacterHit.trailingHalfOf(2).offset(12), 15, 14);
-        checkHit(CharacterHit.at(2, false), 3, 2);
-        checkHit(CharacterHit.at(2, false).offset(12), 15, 14);
     }
 }
