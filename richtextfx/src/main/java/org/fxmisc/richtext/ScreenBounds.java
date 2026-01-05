@@ -4,33 +4,26 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
 public class ScreenBounds {
-    private final Bounds areaScreen;
+    private final Bounds screen;
 
-    public ScreenBounds(Bounds areaScreen) {
-        this.areaScreen = areaScreen;
+    public ScreenBounds(Bounds screen) {
+        this.screen = screen;
     }
 
     /**
      * Evaluate the paragraph node bounds in the area.
-     * @param nodeScreen the paragraph bound position on screen
+     * @param paragraph the paragraph bound position on screen
      * @return the bounds inside the area of the provided paragraph bounds.
      */
-    public Bounds getParagraphBoundsFrom(Bounds nodeScreen) {
-        // use area's minX if scrolled right and paragraph's left is not visible
-        double minX = nodeScreen.getMinX() < areaScreen.getMinX()
-                ? areaScreen.getMinX()
-                : nodeScreen.getMinX();
-        // use area's minY if scrolled down vertically and paragraph's top is not visible
-        double minY = nodeScreen.getMinY() < areaScreen.getMinY()
-                ? areaScreen.getMinY()
-                : nodeScreen.getMinY();
+    public Bounds getParagraphBoundsFrom(Bounds paragraph) {
+        // use area's minX,minY if scrolled right/down and paragraph's left/top is not visible
+        double minX = Math.max(paragraph.getMinX(), screen.getMinX());
+        double minY = Math.max(paragraph.getMinY(), screen.getMinY());
         // use area's width whether paragraph spans outside of it or not
         // so that short or long paragraph takes up the entire space
-        double width = areaScreen.getWidth();
+        double width = screen.getWidth();
         // use area's maxY if scrolled up vertically and paragraph's bottom is not visible
-        double maxY = nodeScreen.getMaxY() < areaScreen.getMaxY()
-                ? nodeScreen.getMaxY()
-                : areaScreen.getMaxY();
+        double maxY = Math.min(paragraph.getMaxY(), screen.getMaxY());
         return new BoundingBox(minX, minY, width, maxY - minY);
     }
 }
