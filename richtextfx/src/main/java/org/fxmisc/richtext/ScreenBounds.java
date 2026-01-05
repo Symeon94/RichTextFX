@@ -3,7 +3,7 @@ package org.fxmisc.richtext;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
-public class ScreenBounds {
+class ScreenBounds {
     private final Bounds screen;
 
     public ScreenBounds(Bounds screen) {
