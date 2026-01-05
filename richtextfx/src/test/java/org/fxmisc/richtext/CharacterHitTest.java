@@ -20,24 +20,25 @@ public class CharacterHitTest {
     @Test
     @DisplayName("Character hit insertion at a given position")
     void insertionAt() {
-        CharacterHit hit = CharacterHit.insertionAt(2);
-        checkHitAndNoCharIndex(hit, 2);
-        checkHitAndNoCharIndex(hit.offset(12), 14);
+        checkHitAndNoCharIndex(CharacterHit.insertionAt(2), 2);
+        checkHitAndNoCharIndex(CharacterHit.insertionAt(2).offset(12), 14);
     }
 
     @Test
     @DisplayName("Character hit leading half at a given position")
     void leadingHalfOf() {
-        CharacterHit hit = CharacterHit.leadingHalfOf(2);
-        checkHit(hit, 2, 2);
-        checkHit(hit.offset(12), 14, 14);
+        checkHit(CharacterHit.leadingHalfOf(2), 2, 2);
+        checkHit(CharacterHit.leadingHalfOf(2).offset(12), 14, 14);
+        checkHit(CharacterHit.at(2, true), 2, 2);
+        checkHit(CharacterHit.at(2, true).offset(12), 14, 14);
     }
 
     @Test
     @DisplayName("Character hit trailing half at a given position")
     void trailingHalfOf() {
-        CharacterHit hit = CharacterHit.trailingHalfOf(2);
-        checkHit(hit, 3, 2);
-        checkHit(hit.offset(12), 15, 14);
+        checkHit(CharacterHit.trailingHalfOf(2), 3, 2);
+        checkHit(CharacterHit.trailingHalfOf(2).offset(12), 15, 14);
+        checkHit(CharacterHit.at(2, false), 3, 2);
+        checkHit(CharacterHit.at(2, false).offset(12), 15, 14);
     }
 }

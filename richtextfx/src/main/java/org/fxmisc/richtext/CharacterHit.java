@@ -31,6 +31,13 @@ public class CharacterHit {
     }
 
     /**
+     * Same as {@link #leadingHalfOf(int)} if {@code leading} is set to true, else same as {@link #trailingHalfOf(int)}
+     */
+    public static CharacterHit at(int charIdx, boolean leading) {
+        return leading ? leadingHalfOf(charIdx) : trailingHalfOf(charIdx);
+    }
+
+    /**
      * <p>A hit that happens after the character at the given position (meaning the character is before).</p>
      * <p>Example: If you have a hit on {@code ALPHA} at position 1, it means after the character {@code L}. The character
      * index would be 1 but the insertion would be at 2.</p>
